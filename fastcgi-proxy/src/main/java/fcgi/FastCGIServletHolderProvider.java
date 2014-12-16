@@ -17,12 +17,12 @@ class FastCGIServletHolderProvider implements Provider<ServletHolder> {
 
     @Override
     public ServletHolder get() {
-        ServletHolder sh = new ServletHolder("FastCGI", FastCGIProxyServlet.class);
+        ServletHolder sh = new ServletHolder("FastCGI", FastCGIServlet.class);
     	sh.setInitParameter(FastCGIProxyServlet.SCRIPT_ROOT_INIT_PARAM, config.getScriptRoot());
-    	sh.setInitParameter("contextPath", "/epages/*");
+    	sh.setInitParameter("contextPath", "/*");
     	sh.setInitParameter("proxyTo", "http://localhost:8090/");
     	sh.setInitParameter("prefix", "/");
-    	sh.setInitParameter(FastCGIProxyServlet.SCRIPT_PATTERN_INIT_PARAM, "(.+)");
+    	sh.setInitParameter(FastCGIProxyServlet.SCRIPT_PATTERN_INIT_PARAM, "(^/epages/\\w+\\.\\w+)(.*)");
     	return sh;
     }
 

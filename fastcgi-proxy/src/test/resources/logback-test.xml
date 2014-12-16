@@ -24,5 +24,5 @@
   <logger name="org.springframework.data.mongodb.core" level="INFO" />
   <logger name="com.mongodb" level="WARN" />
   <logger name="org.glassfish.jersey.process.internal.ExecutorsFactory" level="WARN" />
-  <logger name="org.eclipse.jetty.fcgi" level="INFO" />
+  <logger name="org.eclipse.jetty.fcgi" level="INFO" /> 
 </configuration>

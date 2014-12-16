@@ -1,13 +1,10 @@
 package fcgi;
 
-import java.util.EnumSet;
 import java.util.Set;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
-import javax.servlet.DispatcherType;
 
-import org.eclipse.jetty.fcgi.server.proxy.TryFilesFilter;
 import org.eclipse.jetty.server.ForwardedRequestCustomizer;
 import org.eclipse.jetty.server.HttpConfiguration;
 import org.eclipse.jetty.server.HttpConnectionFactory;
@@ -77,8 +74,6 @@ class FastCGIServerProvider implements Provider<Server> {
             rootContextHandler.addAliasCheck(new AllowSymLinkAliasChecker());
         }
 
-        rootContextHandler.addFilter(TryFilesFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST)).setInitParameter("files", "$path $path");
-        
         for (ServletHolder sh : this.servletHolders) {
             log.info(sh.getName());
             rootContextHandler.addServlet(sh, sh.getInitParameter("contextPath"));

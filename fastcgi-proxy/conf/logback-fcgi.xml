@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Example LOGBACK Configuration File
+  http://logback.qos.ch/manual/configuration.html
+  -->
+<configuration scan="true" scanPeriod="60 seconds">
+  <jmxConfigurator />
+
+  <!--  http://logback.qos.ch/manual/configuration.html#LevelChangePropagator -->
+  <contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator">
+    <resetJUL>true</resetJUL>
+  </contextListener>
+
+  <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>${fcgi_LOG:-./logs}/application/fcgi_${HOSTNAME}.log</file>
+
+    <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+      <fileNamePattern>${fcgi_LOG_ARCHIVE:-./logs/archive}/application/fcgi_${HOSTNAME}.%i.log.gz</fileNamePattern>
+      <minIndex>1</minIndex>
+      <maxIndex>10</maxIndex>
+    </rollingPolicy>
+
+    <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+      <maxFileSize>100MB</maxFileSize>
+    </triggeringPolicy>
+
+    <encoder>
+      <pattern>%date [%thread] %level %logger{80} - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <!-- 
+  <appender name="RESTAPI" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>${fcgi_LOG:-./logs}/application/fcgi_restapi_${HOSTNAME}.log</file>
+
+    <encoder class="net.logstash.logback.encoder.LogstashEncoder" />
+    <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+       <fileNamePattern>${fcgi_LOG:-./logs}/archive/application/fcgi_restapi_${HOSTNAME}.%i.log.gz</fileNamePattern>
+       <minIndex>1</minIndex>
+        <maxIndex>10</maxIndex>
+    </rollingPolicy>
+    <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+       <maxFileSize>100MB</maxFileSize>
+    </triggeringPolicy>
+  </appender>
+
+  <appender name="LOGSTASH" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>${fcgi_LOG:-./logs}/application/fcgi_logstash_${HOSTNAME}.log</file>
+
+    <encoder class="net.logstash.logback.encoder.LogstashEncoder" />
+    <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+       <fileNamePattern>${fcgi_LOG:-./logs}/archive/application/fcgi_logstash_${HOSTNAME}.%i.log.gz</fileNamePattern>
+       <minIndex>1</minIndex>
+        <maxIndex>10</maxIndex>
+    </rollingPolicy>
+    <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+       <maxFileSize>100MB</maxFileSize>
+    </triggeringPolicy>
+  </appender>
+
+  <logger name="RESTAPI" level="INFO" additivity="false">
+    <appender-ref ref="RESTAPI" />
+  </logger>
+
+ -->
+  
+  <root level="WARN">
+    <appender-ref ref="FILE" />
+    <!--
+        <appender-ref ref="LOGSTASH" />
+    -->
+  </root>
+
+  <logger name="com.epages.configuration.api.EPagesJConfiguration" level="INFO" />
+  <logger name="org.eclipse.jetty.server.Server" level="INFO" />
+  <logger name="org.eclipse.jetty.server.AbstractConnector" level="INFO" />
+  <logger name="org.glassfish.jersey.process.internal.ExecutorsFactory" level="WARN" />
+
+</configuration>

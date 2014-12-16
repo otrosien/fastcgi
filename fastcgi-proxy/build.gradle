@@ -1,0 +1,53 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'maven'
+apply plugin: 'application'
+
+repositories {
+    mavenLocal()
+	maven { 
+		url = project.properties['artifactory_url']
+    }
+}
+
+dependencies {
+    // use changing:true while developing against a snapshot
+	compile group:"com.epages", name:"epagesj-epagesj-server-base", version:"6.17.13"
+	compile group:"com.epages", name:"epagesj-pdf", version:"6.17.13"
+    compile "org.eclipse.jetty.fcgi:fcgi-server:9.2.5.v20141112"
+	testCompile "junit:junit:4.12"
+}
+
+version = '1.0'
+mainClassName = "fcgi.FastCGIStart"
+
+applicationDefaultJvmArgs = [
+	"-Dlogback.configurationFile=conf/logback-fcgi.xml",
+	"-DFastCGIServer.requestLoggerEnabled=true",
+	"-DEPAGESJ_CONFIG=conf/",
+    "-XX:+PrintCommandLineFlags",
+    "-XX:+UseG1GC",
+    "-XX:+PrintGCDetails",
+    "-XX:+PrintGCDateStamps",
+    "-Xloggc:logs/fcgi_gc.log",
+    "-Dfile.encoding=UTF-8"
+]
+
+
+jar {
+    manifest.attributes('Main-Class': mainClassName)
+}
+
+task assembleManifestClasspath {
+    doLast {
+        jar {
+            manifest.attributes("Class-Path": configurations.runtime.collect { "../lib/${it.name}" }.join(' '))
+        }
+    }
+}
+
+jar.dependsOn assembleManifestClasspath
+
+applicationDistribution.into('conf') {
+    from(project.file('conf'))
+}

@@ -1,2 +1,2 @@
-include "jetty"
-include "perl"
+include "fastcgi-proxy"
+include "fastcgi-app"

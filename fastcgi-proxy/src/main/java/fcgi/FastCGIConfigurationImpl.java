@@ -7,6 +7,6 @@ final class FastCGIConfigurationImpl implements FastCGIConfiguration {
 	
 	@Override
 	public String getScriptRoot() {
-		return "/epages";
+		return "/";
 	}
 }
