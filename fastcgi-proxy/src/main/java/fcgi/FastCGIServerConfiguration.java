@@ -9,15 +9,22 @@ import com.epages.server.config.AbstractBaseServerConfiguration;
 
 class FastCGIServerConfiguration extends AbstractBaseServerConfiguration {
 
-	@Inject
-	public FastCGIServerConfiguration(Configuration config,
-			EPagesJDirConfiguration dirConfig) {
-		super(config, dirConfig);
-	}
+    private static final String SERVER_SSLPORT = "Server.sslPort";
+    private final Configuration config;
 
-	@Override
-	protected String getAppName() {
-		return "FastCGI";
-	}
+    @Inject
+    public FastCGIServerConfiguration(Configuration config, EPagesJDirConfiguration dirConfig) {
+        super(config, dirConfig);
+        this.config = config;
+    }
+
+    @Override
+    protected String getAppName() {
+        return "FastCGI";
+    }
+
+    public int getSSLPort() {
+        return config.getInt(getAppName() + SERVER_SSLPORT);
+    }
 
 }

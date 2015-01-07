@@ -4,9 +4,18 @@ use Plack::Builder;
 use DE_EPAGES::WebInterface::API::ApplicationServer;
 use DE_EPAGES::Core::API::Script qw ( RunScript );
 use Plack::Middleware::EpagesHeaders;
+use Getopt::Long;
 
 RunScript(
 	Sub => sub {
+
+		my $Standalone;
+		my $Profile;
+
+		GetOptions(
+			'standalone' => \$Standalone,
+			'profile'    => \$Profile,
+		);
 
 		my $builder = Plack::Builder->new;
 
@@ -16,20 +25,18 @@ RunScript(
 
 		my $Server;
 
-		no warnings 'once';
-		if ( defined($DB::sub) ) {
-
+		if ($Standalone) {
 			# start standalone for debugging.
 			$Server = Plack::Handler::Standalone->new(
 				nproc  => 1,
 				port   => '8089',
 				detach => 0,
 			);
+
 			# need to fetch Storename and GUID in this case
 			$builder->add_middleware('Plack::Middleware::EpagesHeaders');
 		}
 		else {
-
 			# start FastCGI
 			$Server = Plack::Handler::FCGI->new(
 				nproc       => 6,
@@ -38,23 +45,20 @@ RunScript(
 				detach      => 0,
 
 				# TODO check if this gives noticeable effect.
-				'psgix.harakiri' => 1,
+				#'psgix.harakiri.commit' => 1,
 			);
 		}
-		use warnings;
 
-		my $wrap = $App->to_app;
-
-		if ( $_[1] eq '-profile' ) {
+		if ($Profile) {
 			$builder->add_middleware(
 				'Debug',
 				panels => [
 					[
 						'Profiler::NYTProf',
-						base_URL =>
-						  'http://otrosien:8089/WebRoot/_MONITOR_/nytprof',
+						base_URL => 'http://otrosien/WebRoot/_MONITOR_/nytprof',
 						root =>
 						  '/srv/epages/eproot/Shared/WebRoot/_MONITOR_/nytprof',
+						minimal => 1,
 					]
 				]
 			);
@@ -62,9 +66,8 @@ RunScript(
 
 		#  $builder->add_middleware('Refresh',  cooldown => '3');
 		#  $builder->add_middleware('Runtime');
-		$wrap = $builder->wrap($wrap);
 
-		eval { $Server->run($wrap); };
+		$Server->run( $builder->wrap( $App->to_app ) );
 		$App->shutdown;
 	}
 );

@@ -11,22 +11,22 @@ import com.epages.server.config.ServerConfiguration;
 
 class FastCGIServer extends BaseEmbeddedServer {
 
-	private static final Logger log = LoggerFactory.getLogger(FastCGIServer.class);
-	
-	@Inject
-	public FastCGIServer(Server server, ServerConfiguration config) {
-		super(server, config);
-	}
+    private static final Logger log = LoggerFactory.getLogger(FastCGIServer.class);
 
-	@Override
-	public void start() {
-		log.info("starting server");
-		super.start();
-	}
+    @Inject
+    public FastCGIServer(Server server, ServerConfiguration config) {
+        super(server, config);
+    }
 
-	@Override
-	public void stop() {
-		log.info("stopping server");
-		super.stop();
-	}
+    @Override
+    public void start() {
+        log.info("starting server");
+        super.start();
+    }
+
+    @Override
+    public void stop() {
+        log.info("stopping server");
+        super.stop();
+    }
 }

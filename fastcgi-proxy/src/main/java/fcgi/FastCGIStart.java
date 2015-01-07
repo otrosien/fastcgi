@@ -6,12 +6,12 @@ import com.google.inject.Injector;
 
 public class FastCGIStart {
 
-	public static void main(String[] args) {
-		Injector injector = PluginServiceLoaderFactory.getInjector();
+    public static void main(String[] args) {
+        Injector injector = PluginServiceLoaderFactory.getInjector();
 
-		//Server
-		EmbeddedServer server = injector.getInstance(EmbeddedServer.class);
-		server.start();
-	}
+        // Server
+        EmbeddedServer server = injector.getInstance(EmbeddedServer.class);
+        server.start();
+    }
 
 }

@@ -19,6 +19,7 @@ sub call
         	my $hLookup = $self->{ascLookup}->lookup('otrosien','/epages/DemoShop.', 'sf');
         	$env->{'HTTP_X_EPAGES_SITE'}  = $hLookup->{SiteGUID};
         	$env->{'HTTP_X_EPAGES_STORE'} = $hLookup->{Storename};
+        	$env->{'SCRIPT_NAME'} = '/epages/DemoShop.sf';
         }
         $self->app->($env);
 }

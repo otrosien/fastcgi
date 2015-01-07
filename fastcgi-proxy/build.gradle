@@ -4,29 +4,29 @@ apply plugin: 'maven'
 apply plugin: 'application'
 
 repositories {
-	maven { 
-		url = project.properties['artifactory_url']
-    }
+    mavenCentral()
     mavenLocal()
-//    flatDir {
-//        dirs 'lib'
-//    }
+    flatDir {
+        dirs 'lib'
+    }
 }
 
 dependencies {
     // use changing:true while developing against a snapshot
-    compile group:"com.epages", name:"epagesj-epagesj-server-base", version:"6.17.14-SNAPSHOT", changing: true
-	compile group:"com.epages", name:"epagesj-pdf", version:"6.17.14-SNAPSHOT", changing: true
-	compile group:"com.epages", name:"epagesj-aspooldbcache", version:"6.17.14-SNAPSHOT", changing: true
-    compile 'org.eclipse.jetty:jetty-alpn-server:9.3.0.M0'
-    compile "org.eclipse.jetty.fcgi:fcgi-server:9.3.0.M0"
-    compile "org.eclipse.jetty.http2:http2-server:9.3.0.M0"
-    compile 'org.eclipse.jetty:jetty-servlets:9.3.0.M0'
-    compile 'org.eclipse.jetty.spdy:spdy-server:9.3.0.M0'
+    compile group:"com.epages", name:"epagesj-epagesj-server-base", version:"7.0.0-SNAPSHOT", changing: true
+	compile group:"com.epages", name:"epagesj-pdf", version:"7.0.0-SNAPSHOT", changing: true
+	compile group:"com.epages", name:"epagesj-aspooldbcache", version:"7.0.0-SNAPSHOT", changing: true
+    compile "org.eclipse.jetty.fcgi:fcgi-server:9.3.0.M1"
+    compile 'org.eclipse.jetty:jetty-servlets:9.3.0.M1'
+    compile 'org.eclipse.jetty.spdy:spdy-http-server:9.3.0.M1'
+    compile 'org.eclipse.jetty:jetty-alpn-server:9.3.0.M1'
     compile 'org.mortbay.jetty.alpn:alpn-boot:8.1.2.v20141202'
+    compile 'org.eclipse.jetty.http2:http2-server:9.3.0.M1'
+
 	testCompile "junit:junit:4.12"
 }
 
+sourceCompatibility = 1.8
 version = '1.0'
 mainClassName = "fcgi.FastCGIStart"
 
@@ -91,7 +91,7 @@ ext {
 
     jerseyVersion = "2.13"
     jersey2GuiceVersion = "0.5"
-    jettyVersion = "9.3.0.M0"
+    jettyVersion = "9.3.0.M1"
 
     hibernateValidatorVersion = "5.1.2.Final"
 
@@ -282,7 +282,6 @@ ext {
             force libraries.jersey_client
             force libraries.jersey_servlet
             force "org.glassfish.jersey.containers:jersey-container-servlet-core:${jerseyVersion}"
-            force "org.eclipse.jetty:jetty-server:9.3.0.M0"
             componentSelection {
                     all { ComponentSelection selection ->
                         if (selection.candidate.module == 'servlet-api' && selection.candidate.version == '2.4') {
@@ -293,10 +292,6 @@ ext {
         }
 
      resolutionStrategy.eachDependency { DependencyResolveDetails details ->
-        if (details.requested.group == 'org.eclipse.jetty') {
-            //prefer different version which contains some necessary fixes
-            details.useVersion '9.3.0.M0'
-        }
         if (details.requested.group == 'javax.servlet') {
             //prefer different version which contains some necessary fixes
             details.useTarget 'javax.servlet:javax.servlet-api:3.1.0'
