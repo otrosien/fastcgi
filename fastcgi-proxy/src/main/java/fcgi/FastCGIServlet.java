@@ -1,12 +1,9 @@
 package fcgi;
 
 import java.io.IOException;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.ws.rs.NotFoundException;
 
@@ -17,9 +14,6 @@ import org.eclipse.jetty.http.HttpScheme;
 
 import com.epages.aspooldbcache.ShopInfo;
 import com.epages.aspooldbcache.ShopInfoService;
-import com.epages.commons.Closeable;
-import com.epages.commons.cache.Cache;
-import com.epages.commons.lifecycle.EPJLifeCycle;
 
 public class FastCGIServlet extends FastCGIProxyServlet {
 

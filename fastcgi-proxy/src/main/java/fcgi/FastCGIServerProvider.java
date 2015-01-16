@@ -27,8 +27,6 @@ import org.eclipse.jetty.util.thread.ThreadPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.epages.server.inject.RequestLogHandlerProvider;
-
 /**
  * This is the web.xml equivalent
  *
@@ -43,14 +41,14 @@ class FastCGIServerProvider implements Provider<Server> {
 
     private final Set<ServletHolder> servletHolders;
 
-    private final RequestLogHandlerProvider requestLoggerProvider;
+    // private final RequestLogHandlerProvider requestLoggerProvider;
 
     @Inject
     public FastCGIServerProvider(FastCGIServerConfiguration config, ThreadPool threadPool, Set<ServletHolder> servletHolders) {
         this.config = config;
         this.threadPool = threadPool;
         this.servletHolders = servletHolders;
-        this.requestLoggerProvider = new RequestLogHandlerProvider(config);
+        // this.requestLoggerProvider = new RequestLogHandlerProvider(config);
         ALPN.debug = true;
     }
 
