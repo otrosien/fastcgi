@@ -27,4 +27,32 @@ class FastCGIServerConfiguration extends AbstractBaseServerConfiguration {
         return config.getInt(getAppName() + SERVER_SSLPORT);
     }
 
+    public boolean getSpdyEnabled() {
+        return config.getBoolean(getAppName() + "Server.spdyEnabled");
+    }
+
+    public boolean getHttp2Enabled() {
+        return config.getBoolean(getAppName() + "Server.http2Enabled");
+    }
+
+    public boolean getPushEnabled() {
+        return config.getBoolean(getAppName() + "Server.pushEnabled");
+    }
+
+    public int getPushAssociatePeriodMs() {
+        return config.getInt(getAppName() + "Server.pushAssociatePeriodMs");
+    }
+
+    public String getSslKeystore() {
+        return config.getString(getAppName() + "Server.sslKeystore");
+    }
+
+    public String getSslKeystorePassword() {
+        return config.getString(getAppName() + "Server.sslKeystorePassword");
+    }
+
+    public String getSslKeyManagerPassword() {
+        return config.getString(getAppName() + "Server.sslKeyManagerPassword");
+    }
+
 }
