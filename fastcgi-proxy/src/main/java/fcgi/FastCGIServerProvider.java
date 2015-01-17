@@ -1,10 +1,12 @@
 package fcgi;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.Set;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
+import javax.servlet.DispatcherType;
 
 import org.eclipse.jetty.alpn.ALPN;
 import org.eclipse.jetty.alpn.server.ALPNServerConnectionFactory;
@@ -30,8 +32,14 @@ import org.eclipse.jetty.spdy.server.http.PushStrategy;
 import org.eclipse.jetty.spdy.server.http.ReferrerPushStrategy;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.eclipse.jetty.util.thread.ThreadPool;
+import org.glassfish.jersey.server.ServerProperties;
+import org.glassfish.jersey.servlet.ServletContainer;
+import org.glassfish.jersey.servlet.ServletProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.epages.ws.rs.RestApplication;
+import com.google.inject.servlet.GuiceFilter;
 
 /**
  * This is the web.xml equivalent
@@ -82,6 +90,8 @@ class FastCGIServerProvider implements Provider<Server> {
             rootContextHandler.addAliasCheck(new AllowSymLinkAliasChecker());
         }
 
+        rootContextHandler.addFilter(GuiceFilter.class, "/*", EnumSet.allOf(DispatcherType.class));
+
         for (ServletHolder sh : this.servletHolders) {
             log.info(sh.getName());
             rootContextHandler.addServlet(sh, sh.getInitParameter("contextPath"));
@@ -89,7 +99,7 @@ class FastCGIServerProvider implements Provider<Server> {
 
         // HTTP/2 Push support.
         if(config.getPushEnabled()) {
-            rootContextHandler.addFilter(getPushFilterHolder(), "/*", null);
+            rootContextHandler.addFilter(getPushFilterHolder(), "/WebRoot/*", null);
         }
 
         //
