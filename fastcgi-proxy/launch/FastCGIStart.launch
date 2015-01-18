@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="org.eclipse.jdt.launching.localJavaApplication">
+<stringAttribute key="bad_container_name" value="/fastcgi-proxy/launch/FastCGIStart.launch"/>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
+<listEntry value="/fastcgi-proxy/src/main/java/fcgi/FastCGIStart.java"/>
+</listAttribute>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
+<listEntry value="1"/>
+</listAttribute>
+<booleanAttribute key="org.eclipse.jdt.launching.ATTR_USE_START_ON_FIRST_THREAD" value="true"/>
+<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="fcgi.FastCGIStart"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="fastcgi-proxy"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xbootclasspath/p:${project_loc:fastcgi-proxy}/lib/alpn-boot-8.1.2.v20141202.jar -XX:+PrintCommandLineFlags -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/tmp/java_dumps -Dfile.encoding=UTF-8"/>
+</launchConfiguration>

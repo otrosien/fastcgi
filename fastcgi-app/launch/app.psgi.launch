@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="org.epic.debug.launchConfigurationPerl">
+<stringAttribute key="ATTR_PROGRAM_PARAMETERS" value="${string_prompt:args:}"/>
+<stringAttribute key="ATTR_PROJECT_NAME" value="fastcgi-app"/>
+<stringAttribute key="ATTR_STARTUP_FILE" value="app.psgi"/>
+</launchConfiguration>
