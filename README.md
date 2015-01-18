@@ -1,15 +1,15 @@
 # ePages via FastCGI
 
 This is a prototype, to find out how much we can benefit from new protocols like ``SPDY`` and ``http/2``,
-from going with standard protocols, like `FastCGI`` and ``PSGI``, or just putting the
-page cache outside of epages with varnish. Another novelty here is to pre-fork the appserver processes
+and from going with standard protocols, like ``FastCGI`` and ``PSGI``, or just putting the
+PageCache outside of epages with [varnish](https://www.varnish-cache.org/). Another novelty here is to pre-fork the appserver processes
 to benefit from copy-on-write memory sharing in Linux.
 
 Beware, there might be dragons on your journey.
 
 ## How do we achieve this?
 
-Instead of launching a separate process foreach application server, we create a pre-forking daemon, which
+Instead of launching a separate process for each application server, we create a pre-forking daemon, which
 spawns a number of child processes, that connect to the message center. The FastCGI proxy (jetty)
 connects to this daemon (the "manager"), and it will delegate the work to its children.
 
@@ -55,7 +55,7 @@ SPDY should be supported in both Firefox and Chrome. For http/2, current version
 Yes, epages sets a cookie called ShopInit=1 with the initial request, which defies all caching, but we can set to ignore this in varnish.
 Only if there is more than just the ShopInit cookie, we bypass varnish. But caching outside of epages brings the problem of cache invalidation.
 This is a delicate subject, as there a multiple ways of accessing a resource in epages (ObjectPath, ObjectID, with provider domain, with shop domain,
-using the Shop.sf or even using Store.sf in the URL....), so it would be insane to know outside of epages when to invalide all these copies.
+using the Shop.sf or even using Store.sf in the URL....), so it would be insane to try to know outside of epages when to invalide all these copies.
 
 Thus you should only cache requests for the shop domain, and invalidate by domain name to clean the cache. In most cases this should be good enough.
 
@@ -63,13 +63,13 @@ BTW, you still need to enable epages PageCache in order for epages to set the ne
   
 ## Some first impressions
 
-There is a **huge** benefit of running ePages behind varnish (100 Req/s -> 30.000 Req/s on my laptop).
+There is a **huge** benefit of running ePages behind varnish (10 Req/s without PageCache -> 100 Req/s with PageCache -> 30.000 Req/s with Varnish on my laptop).
 
 The main problem remains: ePages triggers too many requests after the intial page load (javascript, images etc.)
 
 For this we investigate using SPDY and HTTP/2. For a locally connected server, the new protocols do not offer significant speed improvements. They become more interesting, as soon
 as there is a bigger latency between client and server. You can simulate this in Linux with the tool "tc":
-   ``tc qdisc add dev $NETWORK_INTERFACE root netem delay 200ms``   , or removing it again:
+   ``tc qdisc add dev $NETWORK_INTERFACE root netem delay 200ms``   . To removing it again run:
    ``tc qdisc del dev $NETWORK_INTERFACE root``
 
 SPDY and http/2 Push is enabled by default, but I don't see it kicking off enough yet. The browser still launches too many requests. This might be due to the way we asynchronusly load javascript, but I haven't checked in detail yet. Of course with browser cache turned on all subsequent pages are much faster, as these resources should be in the browser cache by now.
@@ -79,6 +79,7 @@ SPDY and http/2 Push is enabled by default, but I don't see it kicking off enoug
 * The FastCGI connection between Jetty and Plack is sometimes flaky (you'll get 502 Errors) I haven't had the chance to find out what's wrong.
 * Cache invalidation for varnish needs to be plugged in.
 * We could get the pool name from the ASPoolCacheDaemon, but there is no pooling via FastCGI yet. Idea would be to have several FastCGI connections per pool, and load-balance among these.
+* jetty 9.3.0M1 changed the way it registers handlers slightly, so our request logger is off at the moment.
 
 ## Some more toys to play with
 
@@ -86,7 +87,7 @@ SPDY and http/2 Push is enabled by default, but I don't see it kicking off enoug
 * You can enable some Plack Middleware (direct profiling ePages via NYTProf is cool :))
 * Debugging preforked processes via Eclipse does not seem to be possible. Try to run app.psgi with "-stanalone" option. You'll get it listening for HTTP on port 8089 in this case.
 * Play with cache invalidation protocol for varnish. I would recommend to only use varnish on shops that have their own domain, so you can invalidate the domain's HTML cache.
-* Try load-balancing multiple FastCGI connections for "ASPooling"
+* Try load-balancing multiple FastCGI connections for "ASPooling" / sharding
 * Try out the FastCGI module from NGinX... 
 
 etc. 
