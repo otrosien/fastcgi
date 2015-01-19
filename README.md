@@ -27,7 +27,8 @@ Jetty will add these to a mapping list, so that next time it can offer pushing t
 
 Be brave, there is some work to do...
 
-1. Import this project into Eclipse
+1. Install a local epagesj-7.0.0-SNAPSHOT off ``otrosien/feature/spdy`` by doing ``./gradlew install``
+* Import this project into Eclipse
 * Install some modules from CPAN (Plack, Plack::Handler::FastCGI, Starman (if you like))
 * Install varnish (optional) there is a sample config in ``conf/varnish/default.vcl``
 * Make sure you have SSL setup on ePages (``$PERL set.pl -storename Store -path / HasSSLCertificate=1 ``)
@@ -48,7 +49,7 @@ I recommend using the load-testing tool ``wrk``, which gives a good impression o
 
 ## How can I test ``http/2``?
 
-SPDY should be supported in both Firefox and Chrome. For http/2, current versions of Firefox ship with http/2, which is disabled by default, so you just need to enable it (in about:config)
+SPDY should be supported in both Firefox and Chrome. For http/2, current versions of Firefox ship with http/2, which is disabled by default, so you just need to enable it (in about:config). For Chrome try getting a nightly snapshot of Chromium and launch it with ``--enable-spdy4`` (untested).
 
 ### Is the cache useful?
 
@@ -83,11 +84,12 @@ SPDY and http/2 Push is enabled by default, but I don't see it kicking off enoug
 
 ## Some more toys to play with
 
-* You can try using Starman and connect directly via HTTP to your application servers. (still needs some work setting up CGI variables, like SCRIPT_NAME) Try to enable a static handler for WebRoot for more fun with it.
-* You can enable some Plack Middleware (direct profiling ePages via NYTProf is cool :))
-* Debugging preforked processes via Eclipse does not seem to be possible. Try to run app.psgi with "-stanalone" option. You'll get it listening for HTTP on port 8089 in this case.
-* Play with cache invalidation protocol for varnish. I would recommend to only use varnish on shops that have their own domain, so you can invalidate the domain's HTML cache.
-* Try load-balancing multiple FastCGI connections for "ASPooling" / sharding
+* Try using [Starman](search.cpan.org/perldoc?Starman) and connect directly to your application servers via HTTP. (still needs some work setting up CGI variables, like SCRIPT_NAME) Setup a static handler for WebRoot for more fun with it.
+* Enable some Plack Middleware (direct profiling ePages via NYTProf is cool :))
+* Debugging preforked processes via Eclipse does not seem to be possible. Try to run app.psgi with "-stanalone" option. You'll get it listening for HTTP on port 8089 in this case. Or, find a way to connect to the FastCGI child process somehow.
+* Trigger cache invalidation from ePages to varnish when user presses "Clear Page Cache". I would recommend to only use varnish on shops that have their own domain, so you can invalidate the domain's HTML cache.
+* Try load-balancing multiple FastCGI connections for an "ASPooling"/sharding feature
 * Try out the FastCGI module from NGinX... 
+* Setup two VMs with identical hardware spec, to see direct speed comparison with a vanilla installation of ePages
 
 etc. 
