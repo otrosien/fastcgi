@@ -12,10 +12,11 @@ my $app = sub {
 
        return [ 200, [ 'Content-Type' => 'text/plain' ], [ 'Hello World' ] ];
 };
-
+no warnings 'once'; ## no critic (ProhibitNoWarnings)
 my $server = Plack::Handler::FCGI->new(
-    'nproc' => 8,
+    'nproc' => defined($DB::sub)?0:8,
     listen  => [':8090'],
     detach  => 0,
 );
+use warnings;
 $server->run($app);

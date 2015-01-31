@@ -38,8 +38,10 @@ RunScript(
 		}
 		else {
 			# start FastCGI
+		    no warnings 'once'; ## no critic (ProhibitNoWarnings)
 			$Server = Plack::Handler::FCGI->new(
-				nproc       => 6,
+			
+				nproc       => defined($DB::sub)?0:6,
 				port        => '8090',
 				die_timeout => 5,
 				detach      => 0,
@@ -47,6 +49,7 @@ RunScript(
 				# TODO check if this gives noticeable effect.
 				#'psgix.harakiri.commit' => 1,
 			);
+		    use warnings;
 		}
 
 		if ($Profile) {

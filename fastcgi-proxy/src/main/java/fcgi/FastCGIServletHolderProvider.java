@@ -25,8 +25,10 @@ class FastCGIServletHolderProvider implements Provider<ServletHolder> {
         ServletHolder sh = new ServletHolder("FastCGI", new FastCGIServlet(shopInfoService));
         sh.setInitParameter(FastCGIProxyServlet.SCRIPT_ROOT_INIT_PARAM, config.getScriptRoot());
         sh.setInitParameter("contextPath", "/*");
-        sh.setInitParameter("proxyTo", "http://localhost:8090/");
+        sh.setInitParameter("proxyTo", config.getProxyTo().toString());
         sh.setInitParameter("prefix", "/");
+        sh.setInitParameter("idleTimeout", "150000");
+        sh.setInitParameter("timeout", "300000");
         sh.setInitParameter(FastCGIProxyServlet.SCRIPT_PATTERN_INIT_PARAM, "(^/epages/\\w+\\.\\w+)(.*)");
         return sh;
     }

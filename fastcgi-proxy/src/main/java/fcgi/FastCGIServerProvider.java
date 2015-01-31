@@ -10,6 +10,7 @@ import javax.servlet.DispatcherType;
 
 import org.eclipse.jetty.alpn.ALPN;
 import org.eclipse.jetty.alpn.server.ALPNServerConnectionFactory;
+import org.eclipse.jetty.fcgi.server.ServerFCGIConnectionFactory;
 import org.eclipse.jetty.http2.server.HTTP2ServerConnectionFactory;
 import org.eclipse.jetty.server.ConnectionFactory;
 import org.eclipse.jetty.server.ForwardedRequestCustomizer;
@@ -32,13 +33,9 @@ import org.eclipse.jetty.spdy.server.http.PushStrategy;
 import org.eclipse.jetty.spdy.server.http.ReferrerPushStrategy;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.eclipse.jetty.util.thread.ThreadPool;
-import org.glassfish.jersey.server.ServerProperties;
-import org.glassfish.jersey.servlet.ServletContainer;
-import org.glassfish.jersey.servlet.ServletProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.epages.ws.rs.RestApplication;
 import com.google.inject.servlet.GuiceFilter;
 
 /**
@@ -82,8 +79,13 @@ class FastCGIServerProvider implements Provider<Server> {
         sslConnector.setPort(config.getSSLPort());
         server.addConnector(sslConnector);
 
-        server.setStopAtShutdown(config.getStopAtShutdown());
+        // FCGI
+        ServerConnector fcgiConnector = new ServerConnector(server, getFcgiConnectionFactory());
+        fcgiConnector.setHost(config.getHost());
+        fcgiConnector.setPort(8092);
+        server.addConnector(fcgiConnector);
 
+        server.setStopAtShutdown(config.getStopAtShutdown());
         ServletContextHandler rootContextHandler = new ServletContextHandler();
 
         if (config.followSymLinks()) {
@@ -123,6 +125,10 @@ class FastCGIServerProvider implements Provider<Server> {
         server.setHandler(rootContextHandler);
 
         return server;
+    }
+
+    private ConnectionFactory getFcgiConnectionFactory() {
+        return new ServerFCGIConnectionFactory(getHttpConfig());
     }
 
     private ConnectionFactory[] getSslConectionFactories() {
@@ -180,7 +186,6 @@ class FastCGIServerProvider implements Provider<Server> {
         HttpConfiguration httpConfig = new HttpConfiguration();
         httpConfig.setSendDateHeader(config.getSendDateHeader());
         httpConfig.addCustomizer(new ForwardedRequestCustomizer());
-
         httpConfig.setHeaderCacheSize(config.getHeaderCacheSize());
         httpConfig.setRequestHeaderSize(config.getRequestHeaderSize());
         httpConfig.setResponseHeaderSize(config.getResponseHeaderSize());

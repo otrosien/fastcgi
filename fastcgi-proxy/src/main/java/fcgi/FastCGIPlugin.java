@@ -26,6 +26,8 @@ public class FastCGIPlugin extends ServletPlugin {
         install(new EPagesJServerBasePlugin());
         bind(Server.class).toProvider(FastCGIServerProvider.class);
 
+        // test resource for JaxRS via FastCGI
+        // bindToJaxRs(HelloResource.class);
     }
 
 }

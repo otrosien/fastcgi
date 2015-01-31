@@ -54,5 +54,4 @@ class FastCGIServerConfiguration extends AbstractBaseServerConfiguration {
     public String getSslKeyManagerPassword() {
         return config.getString(getAppName() + "Server.sslKeyManagerPassword");
     }
-
 }
