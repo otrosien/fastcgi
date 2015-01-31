@@ -58,7 +58,7 @@ RunScript(
 				panels => [
 					[
 						'Profiler::NYTProf',
-						base_URL => 'http://otrosien/WebRoot/_MONITOR_/nytprof',
+						base_URL => 'https://otrosien/WebRoot/_MONITOR_/nytprof',
 						root =>
 						  '/srv/epages/eproot/Shared/WebRoot/_MONITOR_/nytprof',
 						minimal => 1,
