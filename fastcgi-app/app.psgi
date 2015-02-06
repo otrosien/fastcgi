@@ -38,18 +38,21 @@ RunScript(
 		}
 		else {
 			# start FastCGI
-		    no warnings 'once'; ## no critic (ProhibitNoWarnings)
-			$Server = Plack::Handler::FCGI->new(
-			
-				nproc       => defined($DB::sub)?0:6,
+
+			my %info = (
 				port        => '8090',
 				die_timeout => 5,
 				detach      => 0,
-
 				# TODO check if this gives noticeable effect.
 				#'psgix.harakiri.commit' => 1,
 			);
+		    no warnings 'once'; ## no critic (ProhibitNoWarnings)
+		    $info{manager} = undef if (defined $DB::sub);
 		    use warnings;
+
+			$Server = Plack::Handler::FCGI->new(
+				%info
+			);
 		}
 
 		if ($Profile) {

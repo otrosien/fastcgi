@@ -86,7 +86,6 @@ SPDY and http/2 Push is enabled by default, but I don't see it kicking off enoug
 
 * Try using [Starman](search.cpan.org/perldoc?Starman) and connect directly to your application servers via HTTP. (still needs some work setting up CGI variables, like SCRIPT_NAME) Setup a static handler for WebRoot for more fun with it.
 * Enable some Plack Middleware (direct profiling ePages via NYTProf is cool :))
-* Debugging preforked processes via Eclipse does not seem to be possible. Try to run app.psgi with "-stanalone" option. You'll get it listening for HTTP on port 8089 in this case. Or, find a way to connect to the FastCGI child process somehow.
 * Trigger cache invalidation from ePages to varnish when user presses "Clear Page Cache". I would recommend to only use varnish on shops that have their own domain, so you can invalidate the domain's HTML cache.
 * Try load-balancing multiple FastCGI connections for an "ASPooling"/sharding feature
 * Try out the FastCGI module from NGinX... 
