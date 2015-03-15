@@ -41,6 +41,7 @@ RunScript(
 
 			my %info = (
 				port        => '8090',
+				nproc       => 8,
 				die_timeout => 5,
 				detach      => 0,
 				# TODO check if this gives noticeable effect.

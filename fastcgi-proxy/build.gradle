@@ -11,19 +11,27 @@ repositories {
     }
 }
 
+ext {
+    junitVersion   = "4.12"
+    jettyVersion = "9.3.0.M2"
+
+    libraries = [
+        junit: "junit:junit:${junitVersion}",
+    ]
+}
+
 dependencies {
     // use changing:true while developing against a snapshot
     compile group:"com.epages", name:"epagesj-epagesj-server-base", version:"7.0.0-SNAPSHOT", changing: true
-	compile group:"com.epages", name:"epagesj-pdf", version:"7.0.0-SNAPSHOT", changing: true
-	compile group:"com.epages", name:"epagesj-aspooldbcache", version:"7.0.0-SNAPSHOT", changing: true
-    compile "org.eclipse.jetty.fcgi:fcgi-server:9.3.0.M1"
-    compile 'org.eclipse.jetty:jetty-servlets:9.3.0.M1'
-    compile 'org.eclipse.jetty.spdy:spdy-http-server:9.3.0.M1'
-    compile 'org.eclipse.jetty:jetty-alpn-server:9.3.0.M1'
-    compile 'org.mortbay.jetty.alpn:alpn-boot:8.1.2.v20141202'
-    compile 'org.eclipse.jetty.http2:http2-server:9.3.0.M1'
+    compile group:"com.epages", name:"epagesj-aspooldbcache", version:"7.0.0-SNAPSHOT", changing: true
+    compile "org.eclipse.jetty.fcgi:fcgi-server:${jettyVersion}"
+    compile "org.eclipse.jetty:jetty-servlets:${jettyVersion}"
+    compile "org.eclipse.jetty.http2:http2-server:${jettyVersion}"
+    compile "org.eclipse.jetty:jetty-alpn-server:${jettyVersion}"
+    // TODO: auto-copy alpn boot into lib.
+    compile 'org.mortbay.jetty.alpn:alpn-boot:8.1.3.v20150130'
 
-	testCompile "junit:junit:4.12"
+    testCompile "junit:junit:${junitVersion}"
 }
 
 sourceCompatibility = 1.8
@@ -40,9 +48,8 @@ applicationDefaultJvmArgs = [
     "-XX:+PrintGCDateStamps",
     "-Xloggc:logs/fcgi_gc.log",
     "-Dfile.encoding=UTF-8",
-    "-Xbootclasspath/p:lib/alpn-boot-8.1.2.v20141202.jar"
+    "-Xbootclasspath/p:lib/alpn-boot-8.1.3.v20150130.jar"
 ]
-
 
 jar {
     manifest.attributes('Main-Class': mainClassName)
@@ -60,241 +67,4 @@ jar.dependsOn assembleManifestClasspath
 
 applicationDistribution.into('conf') {
     from(project.file('conf'))
-}
-
-
-ext {
-    slf4jVersion = "1.7.7"
-    logbackVersion = "1.1.2"
-    commonsLoggingVersion = "1.1.3"
-    guavaVersion   = "18.0"
-    jsr305Version = "3.0.0"
-    guiceVersion   = "4.0-beta5"
-    junitVersion   = "4.12-beta-3"
-    mockitoVersion = "1.10.14"
-    jodaTimeVersion = "2.5"
-    jodaConvertVersion = "1.6"
-    commonsConfiguration = "1.10"
-    commonsIoVersion = "2.4"
-    commonsLangVersion = "3.3.2"
-
-    springVersion  = "4.1.2.RELEASE"
-    hsqldbVersion="2.3.2"
-    mysqlDriverVersion = "5.1.34"
-    tomcatVersion = "8.0.15"
-    flywayDbVersion = "3.0"
-    springBatchCoreVersion = "3.0.2.RELEASE"
-    springHateoasVersion = "0.16.0.RELEASE"
-    springDataMongodbVersion = "1.6.1.RELEASE"
-    eclipseLinkVersion = "2.5.2"
-    jpaVersion = "2.1.0"
-
-    jerseyVersion = "2.13"
-    jersey2GuiceVersion = "0.5"
-    jettyVersion = "9.3.0.M1"
-
-    hibernateValidatorVersion = "5.1.2.Final"
-
-    //Please update solrconfig.xml accordingly
-    solrVersion = "4.10.2"
-
-    coreRendererVersion = "9.0.7"
-    commonsDaemonVersion = "1.0.10"
-    pdfboxVersion = "1.8.7"
-    jacocoVersion = "0.7.1.201405082137"
-    gradleEpjPluginsVersion = "0.0.8"
-    xmlApisVersion = "2.0.2"
-    commonsCodecVersion = "1.7"
-    hamcrestCoreVersion = "1.3"
-    logstashLogbackEncoderVersion = "3.4"
-    javaxELVersion = "2.2.6"
-    javaxJSONVersion = "1.0"
-    javaxJSONGlassfishImplVersion = "1.0.4"
-    jaxRsVersion = "2.0.1"
-    servletVersion = "3.1.0"
-    javaxAnnotationAPIVersion = "1.2"
-    axisVersion = "1.4"
-    commonsDiscoveryVersion = "0.5"
-    wsdl4jVersion = "1.6.3"
-    soapClientVersion = "1.4.16"
-    jsoupVersion = "1.8.1"
-    nvi18nVersion = "1.14"
-    jackson2Version = "2.4.1"
-    objenesisVersion = "1.3"
-    metricsVersion = "3.1.0"
-    assertjVersion = "1.7.0"
-    
-    libraries = [
-        //unit testing
-        junit: "junit:junit:${junitVersion}",
-        mockito: "org.mockito:mockito-core:${mockitoVersion}",
-
-        //Logging
-        logstash_logback_encoder : "net.logstash.logback:logstash-logback-encoder:${logstashLogbackEncoderVersion}",
-        logback_classic: "ch.qos.logback:logback-classic:${logbackVersion}",
-        logback_core: "ch.qos.logback:logback-core:${logbackVersion}",
-        jul_to_slf4j: "org.slf4j:jul-to-slf4j:${slf4jVersion}",
-        jcl_over_slf4j: "org.slf4j:jcl-over-slf4j:${slf4jVersion}",
-        log4j_over_slf4j: "org.slf4j:log4j-over-slf4j:${slf4jVersion}",
-        slf4j: "org.slf4j:slf4j-api:${slf4jVersion}",
-        logback_access: "ch.qos.logback:logback-access:${logbackVersion}",
-
-        //Dependency Injection
-        guice: "com.google.inject:guice:${guiceVersion}",
-        guice_multibindings: "com.google.inject.extensions:guice-multibindings:${guiceVersion}",
-
-        //Utilities
-        commons_configuration: "commons-configuration:commons-configuration:${commonsConfiguration}",
-        commons_io: "commons-io:commons-io:${commonsIoVersion}",
-        commons_lang: "org.apache.commons:commons-lang3:${commonsLangVersion}",
-        guava: "com.google.guava:guava:${guavaVersion}",
-        jsr305: "com.google.code.findbugs:jsr305:${jsr305Version}",
-        joda: "joda-time:joda-time:${jodaTimeVersion}",
-        joda_convert: "org.joda:joda-convert:${jodaConvertVersion}",
-        javax_annotation_api: "javax.annotation:javax.annotation-api:${javaxAnnotationAPIVersion}",
-        nv_i18n: "com.neovisionaries:nv-i18n:${nvi18nVersion}",
-
-        spring_core: "org.springframework:spring-core:${springVersion}",
-        //JDBC
-        hsqldb: "org.hsqldb:hsqldb:${hsqldbVersion}",
-        mysql: "mysql:mysql-connector-java:${mysqlDriverVersion}",
-        spring_jdbc: "org.springframework:spring-jdbc:${springVersion}",
-        spring_tx: "org.springframework:spring-tx:${springVersion}",
-        tomcat_jdbc: "org.apache.tomcat:tomcat-jdbc:${tomcatVersion}",
-        spring_batch_core: "org.springframework.batch:spring-batch-core:${springBatchCoreVersion}",
- 
-        flyway_db_core: "org.flywaydb:flyway-core:${flywayDbVersion}",
-        flyway_ant: "org.flywaydb:flyway-ant:${flywayDbVersion}",
-
-        onami_persist: "org.apache.onami:org.apache.onami.persist:1.0.1",
-        eclipse_link: "org.eclipse.persistence:org.eclipse.persistence.jpa:${eclipseLinkVersion}",
-        jpa_persistance: "org.eclipse.persistence:javax.persistence:2.1.0",
-
-        //MongoDB
-        spring_data_mongodb: "org.springframework.data:spring-data-mongodb:${springDataMongodbVersion}",
-
-        //PDF
-        core_renderer: "org.xhtmlrenderer:flying-saucer-pdf:${coreRendererVersion}",
-        pdfbox: "org.apache.pdfbox:pdfbox:${pdfboxVersion}",
-
-        //REST/Servlet
-        jax_rs_api: "javax.ws.rs:javax.ws.rs-api:${jaxRsVersion}",
-        servlet_api: "javax.servlet:javax.servlet-api:${servletVersion}",
-        spring_hateoas: "org.springframework.hateoas:spring-hateoas:${springHateoasVersion}",
-
-        //Jersey-Glassfish
-        jersey_common: "org.glassfish.jersey.core:jersey-common:${jerseyVersion}",
-        jersey_servlet: "org.glassfish.jersey.containers:jersey-container-servlet:${jerseyVersion}",
-        jersey_jackson: "org.glassfish.jersey.media:jersey-media-json-jackson:${jerseyVersion}",
-        jersey_server: "org.glassfish.jersey.core:jersey-server:${jerseyVersion}",
-        jersey_client: "org.glassfish.jersey.core:jersey-client:${jerseyVersion}",
-        jersey_media_jsonp: "org.glassfish.jersey.media:jersey-media-json-processing:${jerseyVersion}",
-        jersey_test_framework_core: "org.glassfish.jersey.test-framework:jersey-test-framework-core:${jerseyVersion}",
-        //OAuth-1
-        jersey_oauth1_server: "org.glassfish.jersey.security:oauth1-server:${jerseyVersion}",
-        jersey_oauth1_signature: "org.glassfish.jersey.security:oauth1-signature:${jerseyVersion}",
-        jersey_oauth1_client: "org.glassfish.jersey.security:oauth1-client:${jerseyVersion}",
-
-        //Bean Validation
-        jersey_bean_validation: "org.glassfish.jersey.ext:jersey-bean-validation:${jerseyVersion}",
-        hibernate_validator: "org.hibernate:hibernate-validator:${hibernateValidatorVersion}",
-        javax_el_glassfish_web: "org.glassfish.web:javax.el:${javaxELVersion}",
-
-        //Templates Engines
-        jersey_mvc_mustache: "org.glassfish.jersey.ext:jersey-mvc-mustache:${jerseyVersion}",
-        //JSON Processing
-        javax_json: "javax.json:javax.json-api:${javaxJSONVersion}",
-        javax_json_glassfish: "org.glassfish:javax.json:${javaxJSONGlassfishImplVersion}",
-
-        //Web Servlet Container
-        jetty_server: "org.eclipse.jetty:jetty-alpn-server:${jettyVersion}",
-        jetty_servlet: "org.eclipse.jetty:jetty-servlet:${jettyVersion}",
-        jetty_util: "org.eclipse.jetty:jetty-util:${jettyVersion}",
-        jetty_webapp: "org.eclipse.jetty:jetty-webapp:${jettyVersion}",
-        jetty_security: "org.eclipse.jetty:jetty-security:${jettyVersion}",
-        jetty_http2_server: "org.eclipse.jetty.http2:http2-server:${jettyVersion}",
-        jetty_alpn: "org.mortbay.jetty.alpn:alpn-boot:8.1.2.v20141202",
-
-        //Search
-        solr_solrj: "org.apache.solr:solr-solrj:${solrVersion}",
-        solr_war: "org.apache.solr:solr:${solrVersion}@war",
-        lucene_queryparser: "org.apache.lucene:lucene-queryparser:${solrVersion}",
-
-        //Windows service
-        commons_daemon: "commons-daemon:commons-daemon:${commonsDaemonVersion}",
-
-        //Gradle Plugins, Docs, Testing Reports, related
-        jacoco_runtime: "org.jacoco:org.jacoco.agent:${jacocoVersion}:runtime",
-        jacoco_ant: "org.jacoco:org.jacoco.ant:${jacocoVersion}",
-        gradle_epj_plugins: "com.epages.plugins:epagesj-gradle-plugins:${gradleEpjPluginsVersion}",
-        gradle_artifactory: 'org.jfrog.buildinfo:build-info-extractor-gradle:3.0.1',
-
-        //EP6 SOAP
-        epages6_soap_client: "de.epages:soapclient-shop:${soapClientVersion}",
-
-        // jsoup html parser
-        jsoup: "org.jsoup:jsoup:${jsoupVersion}",
-
-        httpclient: "org.apache.httpcomponents:httpclient:4.3.5",
-        httpcore: "org.apache.httpcomponents:httpcore:4.3.2",
-        jersey2_guice: "com.squarespace.jersey2-guice:jersey2-guice:${jersey2GuiceVersion}",
-        metrics: "io.dropwizard.metrics:metrics-core:${metricsVersion}",
-        assertj: "org.assertj:assertj-core:${assertjVersion}"
-    ]
-}
-
-     configurations.all {
-        resolutionStrategy {
-        
-         //   failOnVersionConflict()
-            force libraries.jax_rs_api
-            force libraries.servlet_api
-            force "org.slf4j:slf4j-api:${slf4jVersion}"
-            force libraries.jcl_over_slf4j
-            force "commons-logging:commons-logging:${commonsLoggingVersion}"
-            force libraries.commons_io
-            force libraries.junit
-            force "org.hamcrest:hamcrest-core:${hamcrestCoreVersion}"
-            force libraries.spring_core
-            force "org.springframework:spring-expression:${springVersion}"
-            force "org.springframework:spring-beans:${springVersion}"
-            force "org.springframework:spring-tx:${springVersion}"
-            force "org.springframework:spring-aop:${springVersion}"
-            force "org.springframework:spring-context:${springVersion}"
-            force "commons-codec:commons-codec:${commonsCodecVersion}"
-            force "xml-apis:xml-apis:${xmlApisVersion}"
-            force libraries.guava
-            force libraries.logback_core
-            force libraries.logback_classic
-            force libraries.hibernate_validator
-            force libraries.httpclient
-            force libraries.httpcore
-            force "junit:junit-dep:${junitVersion}"
-            force libraries.javax_json_glassfish
-            force "org.objenesis:objenesis:$objenesisVersion"
-            force libraries.guice
-            force "com.fasterxml.jackson.core:jackson-annotations:${jackson2Version}"
-            force "com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:${jackson2Version}"
-            force "com.fasterxml.jackson.jaxrs:jackson-jaxrs-base:${jackson2Version}"
-            force "com.fasterxml.jackson.core:jackson-databind:${jackson2Version}"
-            force libraries.guice_multibindings
-            force libraries.jersey_common
-            force libraries.jersey_client
-            force libraries.jersey_servlet
-            force "org.glassfish.jersey.containers:jersey-container-servlet-core:${jerseyVersion}"
-            componentSelection {
-                    all { ComponentSelection selection ->
-                        if (selection.candidate.module == 'servlet-api' && selection.candidate.version == '2.4') {
-                            selection.reject("bad version '2.4' for 'servlet-api'")
-                        }
-                    }
-            }
-        }
-
-     resolutionStrategy.eachDependency { DependencyResolveDetails details ->
-        if (details.requested.group == 'javax.servlet') {
-            //prefer different version which contains some necessary fixes
-            details.useTarget 'javax.servlet:javax.servlet-api:3.1.0'
-        }
-	}
 }

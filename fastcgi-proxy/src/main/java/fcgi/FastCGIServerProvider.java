@@ -27,10 +27,6 @@ import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.servlets.PushCacheFilter;
-import org.eclipse.jetty.spdy.api.SPDY;
-import org.eclipse.jetty.spdy.server.http.HTTPSPDYServerConnectionFactory;
-import org.eclipse.jetty.spdy.server.http.PushStrategy;
-import org.eclipse.jetty.spdy.server.http.ReferrerPushStrategy;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.eclipse.jetty.util.thread.ThreadPool;
 import org.slf4j.Logger;
@@ -145,25 +141,9 @@ class FastCGIServerProvider implements Provider<Server> {
 
         connectionFactories.add(new SslConnectionFactory(sslContextFactory, "alpn"));
 
-        if(config.getSpdyEnabled()) {
-            PushStrategy pushStrategy;
-            // SPDY Push support
-            if(config.getPushEnabled()) {
-                pushStrategy = new ReferrerPushStrategy();
-                ((ReferrerPushStrategy)pushStrategy).setMaxAssociatedResources(120);
-                ((ReferrerPushStrategy)pushStrategy).setReferrerPushPeriod(config.getPushAssociatePeriodMs());
-            }
-            else {
-                pushStrategy = new PushStrategy.None();
-            }
-
-            connectionFactories.add(new HTTPSPDYServerConnectionFactory(SPDY.V3, httpConfig, pushStrategy));
-            supportedProtocols.add(0, "spdy/3");
-        }
-
         if(config.getHttp2Enabled()) {
             connectionFactories.add(new HTTP2ServerConnectionFactory(httpConfig));
-            supportedProtocols.add(0, "h2-14");
+            supportedProtocols.add(0, "h2");
         }
 
         ALPNServerConnectionFactory alpn = new ALPNServerConnectionFactory(supportedProtocols.toArray(new String[0]));

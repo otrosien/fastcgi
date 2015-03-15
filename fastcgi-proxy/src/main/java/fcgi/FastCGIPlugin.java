@@ -21,6 +21,7 @@ public class FastCGIPlugin extends ServletPlugin {
 
         Multibinder<ServletHolder> servletHolderMultibinder = Multibinder.newSetBinder(binder(), ServletHolder.class);
         servletHolderMultibinder.addBinding().toProvider(FastCGIServletHolderProvider.class);
+        servletHolderMultibinder.addBinding().toProvider(WebRootServletHolderProvider.class);
 
         // install basic bindings
         install(new EPagesJServerBasePlugin());
